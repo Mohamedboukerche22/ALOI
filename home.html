@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>    WEOI 2025 Mirror contest
+</title>
+
+        <link rel="shortcut icon" href="./static/favicon.ico" />
+        <link rel="stylesheet" href="./static/css/bootstrap.css">
+        <link rel="stylesheet" href="./static/cws_style.css">
+
+        <script src="./static/jq/jquery-3.6.0.min.js"></script>
+        <script src="./static/jq/jquery-migrate-3.3.2.min.js"></script>
+        <script src="./static/js/bootstrap.js"></script>
+        <script src="./static/cws_utils.js"></script>
+
+
+
+    <script>
+var LANGUAGES = {
+    'C++20 / g++': {
+        '.cpp': true,
+        '.cc': true,
+        '.cxx': true,
+        '.c++': true,
+        '.C': true,
+    },
+};
+
+// FIXME use Date objects
+var utils = new CMS.CWSUtils(".", "./mirror", "mirror",
+                             1751327636.722057,
+                             1751334836.722057,
+                             1751327618.700724,
+                             1751396400.0,
+                             1);
+$(document).ready(function () {
+    utils.update_time(true);
+    var timer = setInterval(function() {
+        utils.update_time(true, timer);
+    }, 1000);
+    utils.update_unread_count(0);
+    utils.update_notifications(true);
+    setInterval(function() { utils.update_notifications(); }, 30000);
+    $('#main').css('top', $('#navigation_bar').outerHeight());
+});
+
+    </script>
+    </head>
+    <body>
+        <div id="navigation_bar" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="./mirror">WEOI 2025 Mirror contest</a>
+                    <p class="navbar-text pull-right">
+                        <select id="lang" class="form-control btn btn-info" onchange="utils.switch_lang()">
+                            <option value="" selected>Automatic (العربية)</option>
+                            <option value="ar">العربية</option>
+                            <option value="bg">български</option>
+                            <option value="bs">bosanski</option>
+                            <option value="cs">čeština</option>
+                            <option value="de">Deutsch</option>
+                            <option value="en">English</option>
+                            <option value="es">español</option>
+                            <option value="es-CL">español (Chile)</option>
+                            <option value="et">eesti</option>
+                            <option value="fr">français</option>
+                            <option value="hu">magyar</option>
+                            <option value="it">italiano</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="lt">lietuvių</option>
+                            <option value="lv">latviešu</option>
+                            <option value="nl">Nederlands</option>
+                            <option value="ro">română</option>
+                            <option value="ru">русский</option>
+                            <option value="sl">slovenščina</option>
+                            <option value="th">ไทย</option>
+                            <option value="uk">українська</option>
+                            <option value="vi">Tiếng Việt</option>
+                            <option value="zh-Hans-CN">中文 (简体, 中国)</option>
+                            <option value="zh-Hant-TW">中文 (繁體, 台灣)</option>
+                        </select>
+                    </p>
+                    <form action="./mirror/logout" method="POST" class="navbar-form pull-right">
+                        <input type="hidden" name="_xsrf" value="2|59e59fbc|14f31ee35fbd0c6921024497a55c4b53|1751223629"/>
+                        <button type="submit" class="btn btn-warning">تسجيل خروج</button>
+                    </form>
+                    <p class="navbar-text pull-right">
+سجلت الدخول باسم <strong>MohamedBoukerche</strong><em>mohamedboukerche55</em>                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="notifications" class="notifications"></div>
+        <!-- Some hidden divs to provide translations of strings used by JS -->
+        <div style="display: none" id="translation_new_message">
+رسالة جديدة        </div>
+        <div style="display: none" id="translation_new_announcement">
+منشور جديد        </div>
+        <div style="display: none" id="translation_new_answer">
+إجابة جديدة        </div>
+        <div style="display: none" id="translation_unread">
+%d غير مقروءة        </div>
+        <div style="display: none" id="translation_until_contest_starts">
+حتى بداية المسابقة:        </div>
+        <div style="display: none" id="translation_until_contest_ends">
+حتى نهاية المسابقة:        </div>
+        <div style="display: none" id="translation_until_analysis_starts">
+حتى بداية المراجعة:        </div>
+        <div style="display: none" id="translation_until_analysis_ends">
+حتى نهاية المراجعة:        </div>
+        <div style="display: none" id="translation_time_left">
+الوقت المتبقي:        </div>
+        <!-- End -->
+        <div id="main" class="container">
+            <div class="row">
+                <div class="span3">
+                    <h3 id="server_time_box">
+                        <span id="server_time_label">وقت السيرفر:</span>
+                        <span id="server_time"></span>
+                    </h3>
+                    <h3 id="countdown_box">
+                        <span id="countdown_label"></span>
+                        <span id="countdown"></span>
+                    </h3>
+                    <div class="well" style="padding: 8px 0;">
+                        <ul class="nav nav-list">
+
+                            <li class="active">
+                                <a href="./mirror">نظرة عامة</a>
+                            </li>
+                            <li>
+                                <a href="./mirror/communication">التواصل                                    <span id="unread_count" class="label label-warning no_unread"></span>
+                                </a>
+                            </li>
+                            <li class="nav-header">
+                                mirroraqueducts
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirroraqueducts/description">نص المسألة</a>
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirroraqueducts/submissions">التسليمات</a>
+                            </li>
+                            <li class="nav-header">
+                                mirrordecoration
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrordecoration/description">نص المسألة</a>
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrordecoration/submissions">التسليمات</a>
+                            </li>
+                            <li class="nav-header">
+                                mirrorpatricians
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrorpatricians/description">نص المسألة</a>
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrorpatricians/submissions">التسليمات</a>
+                            </li>
+                            <li class="nav-header">
+                                mirrorroads
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrorroads/description">نص المسألة</a>
+                            </li>
+                            <li>
+                                <a href="./mirror/tasks/mirrorroads/submissions">التسليمات</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="./mirror/documentation">دليل الاستخدام</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <span class="license_notice">
+                    <a href="https://github.com/cms-dev/cms" rel="author noreferrer" target="_blank">نظام إدارة المسابقات</a>
+is released under the                    <a href="https://www.gnu.org/licenses/agpl" rel="license noreferrer" target="_blank">رخصة جنو أفيرو العامة</a>.
+                    </span>
+                </div>
+
+
+<div class="span9">
+
+<div class="page-header">
+    <h1>نظرة عامة</h1>
+</div>
+
+<h2>معلومات عامة</h2>
+<div class="row">
+    <div class="span5">
+        <p>
+المسابقة حية الآن.        </p>
+        <p>
+The contest started at 28‏/06‏/2025، 9:00:00 م and will end at 9:00:00 م.        </p>
+
+
+
+
+
+
+    </div>
+    <div class="span4">
+        <div class="well per_user_time">
+            <p>
+Every user is allowed to compete (i.e. submit solutions) for a uninterrupted time frame of 5 ساعات.            </p>
+
+            <p>
+You started your time frame at 30‏/06‏/2025، 8:53:38 م and you already finished it.        لا يمكنك فعل شيء.            </p>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+</div>
+            </div>
+        </div>
+
+    </body>
+</html>
