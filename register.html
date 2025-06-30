@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>    WEOI 2025 Mirror contest
+</title>
+
+        <link rel="shortcut icon" href="../static/favicon.ico" />
+        <link rel="stylesheet" href="../static/css/bootstrap.css">
+        <link rel="stylesheet" href="../static/cws_style.css">
+
+        <script src="../static/jq/jquery-3.6.0.min.js"></script>
+        <script src="../static/jq/jquery-migrate-3.3.2.min.js"></script>
+        <script src="../static/js/bootstrap.js"></script>
+        <script src="../static/cws_utils.js"></script>
+
+    </head>
+    <body>
+
+<script>
+const registerFields = [
+    "first_name",
+    "last_name",
+    "email",
+    "password-confirm",
+];
+
+function clearErrors() {
+    // Reset error text
+    $("#password-input").removeClass("error");
+    $("#password-input span.help-block").text("");
+    $("#password-confirm-input").removeClass("error");
+    $("#password-confirm-input span.help-block").text("");
+    $("#username-input").removeClass("error");
+    $("#username-input span.help-block").text("");
+}
+
+$(document).ready(function() {
+    const passwordHelp = $("#password-input span.help-block").text();
+
+    $("#register-pill").click(function(e) {
+        clearErrors();
+        $("#password-input span.help-block").text(passwordHelp);
+        $('input[name=new_user]').val(true);
+        registerFields.forEach((fieldName) => {
+            $(`#${fieldName}`).prop("disabled", false);
+            $(`#${fieldName}`).closest(".control-group").show();
+        });
+        $("#form-divider").after($("#credentials"));
+        $("#form-divider").before($("#profile"));
+        $("#form-divider").show();
+    });
+
+    $("#join-pill").click(function(e) {
+        clearErrors();
+        $('input[name=new_user]').val(false);
+        registerFields.forEach((fieldName) => {
+            $(`#${fieldName}`).prop("disabled", true);
+            $(`#${fieldName}`).closest(".control-group").hide();
+        });
+        $("#form-divider").after($("#profile"));
+        $("#form-divider").before($("#credentials"));
+        $("#form-divider").hide();
+    });
+
+    $("#signup").submit(function(e) {
+        clearErrors();
+
+        let isNewUser = $('input[name=new_user]').val() == 'true';
+
+        // Check that passwords are the same
+        if (isNewUser && $("#password").val() !== $("#password-confirm").val()) {
+            $("#password-confirm-input").addClass("error");
+            $("#password-confirm-input span.help-block").text("كلمتي المرور غير متطابقة!");
+            $("#password-confirm").focus();
+        } else {
+            var data = $(this).serialize();
+            var url = $(this).attr('action');
+
+            $("#submit-button-loading").show();
+
+            $.post(url, data).done(function(data) {
+                $("#signup-mask").hide();
+                $("#confirmed-mask").show();
+                $("#show-username").text(data);
+            }).fail(function(data) {
+                if (data.status === 409) {
+                    if (isNewUser) {
+                        // Username is already used
+                        $("#username-input").addClass("error");
+                        $("#username-input span.help-block").text("This username is already taken, please choose a different one.");
+                        $("#username").focus();
+                    } else {
+                        // User is already participating in this contest
+                        $("#username-input").addClass("error");
+                        $("#username-input span.help-block").text("المستخدم قد سجل للمسابقة من قبل.");
+                        $("#username").focus();
+                    }
+                } else if (data.status === 404) {
+                    // Invalid username
+                    $("#username-input").addClass("error");
+                    $("#username-input span.help-block").text("لا يوجد مستخدم هكذا.");
+                    $("#username").focus();
+                } else if (data.status === 403) {
+                    // Password does not match
+                    $("#password-input").addClass("error");
+                    $("#password-input span.help-block").text("كلمة المرور غير صحيحة.");
+                    $("#password").focus();
+                }
+            }).always(function() {
+                $("#submit-button-loading").hide();
+            });
+        }
+
+        e.preventDefault();
+    });
+
+});
+</script>
+
+<div class="register_box hero-unit">
+    <div id="signup-mask">
+        <h1>التسجيل</h1>
+        <p>فضلًا املأ الحقول للتسجيل</p>
+        <ul class="nav nav-pills">
+            <li class="active" id="register-pill"><a href="#" data-toggle="tab">مستخدم جديد</a></li>
+            <li id="join-pill"><a href="#" data-toggle="tab">ادخل المسابقة</a></li>
+        </ul>
+        <form id="signup" class="form-horizontal" action="../mirror/register">
+            <input type="hidden" name="_xsrf" value="2|fc705589|d964fe2bd065c6c4b510c5b51954ecb7|1751327678"/>
+            <input type="hidden" name="new_user" value="true" />
+            <fieldset>
+                <div id="profile">
+                    <div class="control-group">
+                        <label class="control-label" for="first_name">الاسم الأول</label>
+                        <div class="controls">
+                            <input required minlength="1" maxlength="50" type="text" class="input-xlarge" name="first_name" id="first_name">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="last_name">الاسم الأخير</label>
+                        <div class="controls">
+                            <input required minlength="1" maxlength="50" type="text" class="input-xlarge" name="last_name" id="last_name">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="email">البريد الإلكتروني</label>
+                        <div class="controls">
+                            <input minlength="0" maxlength="50" type="text" class="input-xlarge" name="email" id="email" autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="team">Representing</label>
+                        <div class="controls">
+                            <select id="team" name="team">
+                                <option value="ACTS">ACTS</option>
+                                <option value="BE">Belgium</option>
+                                <option value="FR">France</option>
+                                <option value="UK">Great Britain</option>
+                                <option value="IR">Ireland</option>
+                                <option value="IT">Italy</option>
+                                <option value="LU">Luxembourg</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="PT">Portugal</option>
+                                <option value="ES">Spain</option>
+                                <option value="CH">Switzerland</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr id="form-divider">
+
+                <div id="credentials">
+                    <div id="username-input" class="control-group">
+                        <label class="control-label" for="username">اسم المستخدم</label>
+                        <div class="controls">
+                            <input required minlength="1" maxlength="50" pattern="^[A-Za-z0-9_-]+$" type="text" class="input-xlarge" name="username" id="username">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div id="password-input" class="control-group">
+                        <label class="control-label" for="password">كلمة المرور</label>
+                        <div class="controls">
+                            <input required minlength="6" maxlength="50" type="password" class="input-xlarge" name="password" id="password" autocomplete="new-password">
+                            <span class="help-block">
+Must be 6 characters or more.                            </span>
+                        </div>
+                    </div>
+                    <div id="password-confirm-input" class="control-group">
+                        <label class="control-label" for="password-confirm">تأكيد كلمة المرور</label>
+                        <div class="controls">
+                            <input required minlength="6" maxlength="50" type="password" class="input-xlarge" name="password-confirm" id="password-confirm" autocomplete="new-password">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary btn-large">تسجيل</button>
+                        <img id="submit-button-loading" style="display: none;" src="../static/loading.gif" alt="loading..." />
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div id="confirmed-mask" style="display: none;">
+        <h1>التسجيل</h1>
+
+        <p>سجلت في المسابقة بنجاح!</p>
+
+        <p>اسم المستخدم:</p>
+
+        <p id="show-username" style="font-size: xx-large; font-family: monospace; font-weight: bold; text-align: center;">
+        </p>
+
+        <p>كلمة مرورك خزنت بأمان.</p>
+
+        <a href="../mirror" class="btn btn-success btn-large">العودة لتسجيل الدخول</a>
+    </div>
+
+</div>
+
+    </body>
+</html>
